@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Library Management Frontend
+
+Frontend aplikasi manajemen perpustakaan menggunakan Next.js 16, TypeScript, dan Shadcn UI.
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| UI Components | Shadcn UI (Radix UI) |
+| Icons | Lucide React |
+| Authentication | NextAuth.js v5 |
+| State Management | TanStack Query v5 |
+| Form Management | React Hook Form + Zod |
+| HTTP Client | Axios |
+| Testing | Playwright |
+
+## Features
+
+- ✅ Authentication (Login/Logout)
+- ✅ Protected Routes
+- ✅ Books CRUD (Create, Read, Update, Delete)
+- ✅ Search dengan Debounce
+- ✅ Sorting (Judul, Tahun, Stok)
+- ✅ Pagination dengan URL Params
+- ✅ Cover Image dengan Live Preview
+- ✅ Error State Handling
+- ✅ Responsive Design
+- ✅ E2E Testing
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- Backend API running di `http://localhost:3001/api`
+
+### Installation
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd book-management-fe
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env.local
+```
+
+### Environment Variables
+
+Buat file `.env.local`:
+
+```env
+AUTH_SECRET=your-secret-key-min-32-chars-long
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── (auth)/login/          # Login page
+│   ├── (dashboard)/
+│   │   ├── layout.tsx         # Dashboard layout (Navbar + Sidebar)
+│   │   ├── books/page.tsx     # Books CRUD page
+│   │   └── page.tsx           # Redirect to /books
+│   └── api/auth/              # NextAuth handlers
+├── components/
+│   ├── books/                 # Book components (Card, Form, Dialogs)
+│   ├── shared/                # Shared components (Navbar, Sidebar, etc)
+│   ├── providers/             # Context providers
+│   └── ui/                    # Shadcn UI components
+├── hooks/                     # Custom hooks
+├── lib/                       # Utilities (axios, auth, queries)
+├── schemas/                   # Zod validation schemas
+└── types/                     # TypeScript types
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### E2E Tests (Playwright)
 
-## Deploy on Vercel
+```bash
+# Install browsers
+npx playwright install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Run tests
+npx playwright test
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Run tests with UI
+npx playwright test --ui
+
+# Run specific test
+npx playwright test tests/library.spec.ts
+```
+
+## API Integration
+
+Frontend terintegrasi dengan backend NestJS:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/books` | GET | Get books (pagination, search, sort) |
+| `/api/books` | POST | Create book |
+| `/api/books/:id` | GET | Get book by ID |
+| `/api/books/:id` | PATCH | Update book |
+| `/api/books/:id` | DELETE | Delete book |
+
+## License
+
+MIT
