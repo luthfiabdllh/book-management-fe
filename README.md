@@ -35,7 +35,7 @@ Frontend aplikasi manajemen perpustakaan menggunakan Next.js 16, TypeScript, dan
 ### Prerequisites
 
 - Node.js 18+
-- Backend API running di `http://localhost:3001/api`
+- Backend API running di `https://main-story-test-be.vercel.app/api`
 
 ### Installation
 
@@ -57,7 +57,7 @@ Buat file `.env.local`:
 
 ```env
 AUTH_SECRET=your-secret-key-min-32-chars-long
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_API_URL=https://main-story-test-be.vercel.app/api
 ```
 
 ### Development
