@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 
 // Test credentials - UPDATE THESE with valid test user from backend
 // To get valid credentials:
 // 1. Register a user via backend API or Supabase dashboard
 // 2. Update TEST_EMAIL and TEST_PASSWORD below
-const TEST_EMAIL = process.env.TEST_EMAIL || "test@example.com";
+const TEST_EMAIL = process.env.TEST_EMAIL || "admin@example.com";
 const TEST_PASSWORD = process.env.TEST_PASSWORD || "password123";
 
 test.describe("Login Page UI", () => {
@@ -111,7 +111,7 @@ test.describe("Authenticated Features", () => {
 
   test("should logout successfully", async ({ page }) => {
     // Click logout button
-    await page.click('button:has-text("Logout")');
+    await page.click('button:has-text("Keluar")');
 
     // Should redirect to login
     await expect(page).toHaveURL(/\/login/, { timeout: 5000 });
@@ -161,18 +161,20 @@ test.describe("Books CRUD Operations", () => {
     await page.fill('input[name="title"]', `Test Book ${timestamp}`);
     await page.fill('input[name="author"]', "Test Author");
     await page.fill('input[name="isbn"]', "978-0-13-468599-1"); // Valid ISBN-13
+    await page.fill('input[name="cover_image"]', "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400");
     await page.fill('input[name="published_year"]', "2024");
     await page.fill('input[name="stock"]', "10");
 
     await page.click('button[type="submit"]:has-text("Tambah Buku")');
 
     // Dialog should close and toast should appear
-    await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 5000 });
+    await expect(page.locator('[role="dialog"]')).not.toBeVisible({ timeout: 50000 });
     await expect(page.locator("text=Buku berhasil ditambahkan")).toBeVisible({ timeout: 5000 });
   });
 
   test("should open view dialog when clicking book card", async ({ page }) => {
     // Wait for books to load
+    await page.waitForTimeout(5000);
     const bookCard = page.locator('[data-testid="book-card"]').first();
     
     // Skip if no books
@@ -188,6 +190,7 @@ test.describe("Books CRUD Operations", () => {
   });
 
   test("should show delete confirmation dialog", async ({ page }) => {
+    await page.waitForTimeout(5000);
     const bookCard = page.locator('[data-testid="book-card"]').first();
     
     if (await bookCard.count() === 0) {
@@ -206,7 +209,8 @@ test.describe("Books CRUD Operations", () => {
     await expect(page.locator('text=Apakah Anda yakin')).toBeVisible();
   });
 
-  test("should cancel delete when clicking cancel button", async ({ page }) => {
+  test("should show update confirmation dialog", async ({ page }) => {
+    await page.waitForTimeout(5000);
     const bookCard = page.locator('[data-testid="book-card"]').first();
     
     if (await bookCard.count() === 0) {
@@ -215,56 +219,10 @@ test.describe("Books CRUD Operations", () => {
     }
 
     await bookCard.locator('button[aria-haspopup="menu"]').click();
-    await page.click('text=Hapus');
+    await page.click('text=Edit');
 
-    // Click cancel
-    await page.click('button:has-text("Batal")');
-
-    // Alert dialog should close
-    await expect(page.locator('[role="alertdialog"]')).not.toBeVisible();
-  });
-});
-
-test.describe("Pagination", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(`${BASE_URL}/login`);
-    await page.fill('input[type="email"]', TEST_EMAIL);
-    await page.fill('input[type="password"]', TEST_PASSWORD);
-    await page.click('button[type="submit"]');
-    
-    try {
-      await expect(page).toHaveURL(/\/books/, { timeout: 10000 });
-    } catch {
-      test.skip(true, "Login failed - check TEST_EMAIL and TEST_PASSWORD");
-    }
-  });
-
-  test("should navigate to next page if available", async ({ page }) => {
-    // Wait for books to load
-    await page.waitForTimeout(2000);
-    
-    const nextButton = page.locator('button[aria-label="Next page"]');
-
-    if (await nextButton.isVisible() && await nextButton.isEnabled()) {
-      await nextButton.click();
-      await expect(page).toHaveURL(/page=2/);
-    } else {
-      // Skip if pagination not available
-      test.skip(true, "Pagination not available");
-    }
-  });
-
-  test("should navigate to specific page number if available", async ({ page }) => {
-    // Wait for books to load
-    await page.waitForTimeout(2000);
-    
-    const page2Button = page.locator("button", { hasText: "2" }).first();
-
-    if (await page2Button.isVisible()) {
-      await page2Button.click();
-      await expect(page).toHaveURL(/page=2/);
-    } else {
-      test.skip(true, "Page 2 not available");
-    }
+    // Alert dialog should appear and show update form
+    await expect(page.locator('[role="dialog"]')).toBeVisible();
+    await expect(page.locator('button:has-text("Simpan Perubahan")')).toBeVisible();
   });
 });

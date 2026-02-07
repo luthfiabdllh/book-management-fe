@@ -93,7 +93,7 @@ export function BookForm({ book, onSubmit, isLoading, onCancel }: BookFormProps)
           name="cover_image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>URL Cover Image (Opsional)</FormLabel>
+              <FormLabel>URL Cover Image</FormLabel>
               <FormControl>
                 <Input 
                   placeholder="https://example.com/image.jpg" 

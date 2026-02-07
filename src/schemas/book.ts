@@ -13,7 +13,7 @@ export const bookSchema = z.object({
   stock: z.number()
     .int("Stok harus berupa angka bulat")
     .min(0, "Stok tidak boleh kurang dari 0"),
-  cover_image: z.string().url("Cover image harus berupa URL yang valid").optional().or(z.literal("")).optional(),
+  cover_image: z.string().min(1, "URL gambar wajib diisi").url("Cover image harus berupa URL yang valid"),
 });
 
 export type BookFormValues = z.infer<typeof bookSchema>;
