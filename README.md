@@ -2,6 +2,10 @@
 
 Frontend aplikasi manajemen perpustakaan menggunakan Next.js 16, TypeScript, dan Shadcn UI.
 
+## 🌐 Demo
+
+**Live App**: [https://main-story-test.vercel.app](https://main-story-test.vercel.app)
+
 ## Tech Stack
 
 | Category | Technology |
